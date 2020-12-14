@@ -1,0 +1,824 @@
+<!doctype html><html lang="pt-br"><meta http-equiv="content-type" content="text/html;charset=utf-8" /><head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png"><link rel="manifest" href="/assets/favicon/site.webmanifest"><link rel="mask-icon" href="/assets/favicon/safari-pinned-tab.svg" color="#5bbad5"><meta name="msapplication-TileColor" content="#ffffff"><meta name="theme-color" content="#ffffff"> <link rel="stylesheet" href="/assets/css/theme.min.css"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"><script src="/assets/libs/jquery/dist/jquery.min.js"></script><script src="/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script><title>Kin Network - Minha Conta</title><script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script><script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script><script> var config = { apiKey: "AIzaSyDcPHMXZ_bu8Tz42wH4wG7ZzGtGNBRiB-M", authDomain: "kin-network-internaciona.firebaseapp.com", databaseURL: "https://kin-network-internaciona.firebaseio.com", projectId: "kin-network-internaciona", storageBucket: "kin-network-internaciona.appspot.com", messagingSenderId: "503112883954" }; firebase.initializeApp(config);</script><link rel="stylesheet" href="/assets/fonts/feather/feather.min.css">
+    <link rel="stylesheet" href="/assets/libs/quill/dist/quill.core.css">
+    <link rel="stylesheet" href="/assets/libs/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="/assets/libs/flatpickr/dist/flatpickr.min.css">
+	<style>.copy_2W {display:none!important;}.chatCopyright_3s {display:none!important;}</style></head> 
+	<body style="display: block;background-image: url(http://localhost:5000/assets/img/covers/auth-side-cover.jpg);background-repeat: no-repeat;background-size: cover;background-attachment: fixed;">
+	<script>
+		var db = firebase.firestore();
+		firebase.auth().onAuthStateChanged(function(user) {
+		  if (user) {
+		    $("#meuid").text("Meu ID: " + user.uid);
+			var docRef = db.collection("usuarios").doc(user.uid);
+			docRef.get().then(function(doc) {
+			    if (doc.exists) {
+					// vereficar tipo de conta
+					if(doc.data().type == "1"){
+					// inicio da conta juridica
+						// vereficar conta
+						if(doc.data().verefied == "true"){
+							$("#username").html("<i class='fas fa-check-circle'></i> " + user.displayName);
+							$("#newsenha").show();
+						}else{
+							$("#username").html(user.displayName);
+							$("#vereficacao").show();
+						}
+						// vereficar foto perfil
+						if(user.photoURL == null){
+							$("#profileimg").html("<span class='avatar-title rounded-circle'>" + doc.data().razaosocial.charAt(0).toUpperCase() + doc.data().razaosocial.charAt(1).toUpperCase() + "</span>");
+						}else{
+							$("#profileimg").html("<img src='" + user.photoURL + "' class='avatar-img rounded-circle border border-4 border-body'>");
+						}
+						// inserir dados nos val
+						$("#inputrazaosocial").val(doc.data().razaosocial);
+						$("#inputnomedocontato").val(doc.data().nomedocontato);
+						$("#inputemailempresarial").val(user.email);
+						$("#inputcnpj").val(doc.data().cnpj);
+						$("#inputinscricaoestadual").val(doc.data().inscricaoestadual);
+						// inserir dados de contato
+						$("#inputcep").val(doc.data().cep);
+						$("#inputuf").val(doc.data().uf);
+						$("#inputbairro").val(doc.data().bairro);
+						$("#inputcidade").val(doc.data().cidade);
+						$("#inputendereco").val(doc.data().endereco);
+						$("#inputcomplemento").val(doc.data().complemento);
+						$("#inputtelefone").val(doc.data().telefone);
+						$("#inputcelular").val(doc.data().celular);
+						// carregar pagina
+						setTimeout(func, 100);
+						function func() {
+						    $("#loading").hide();
+							$("#headerprofile").show();
+							$("#pessoajuridica").show();
+							$("#informationcontact").show();
+							if(user.emailVerified == false){
+								user.sendEmailVerification().then(function() {});
+								$("#alerts").html("<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Atencão: </strong> Você ainda não fez a confirmação do seu email. <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>×</span></button></div>");
+							}
+						}
+					// fim da conta juridica
+					}else{
+					// inicio da conta fisica
+						// vereficar conta
+						if(doc.data().verefied == "true"){
+							$("#username").html("<i class='fas fa-check-circle'></i> " + user.displayName);
+							$("#newsenha").show();
+						}else{
+							$("#username").html(user.displayName);
+							$("#vereficacao").show();
+						}
+						// vereficar foto perfil
+						if(user.photoURL == null){
+							$("#profileimg").html("<span class='avatar-title rounded-circle'>" + doc.data().primeironome.charAt(0).toUpperCase() + doc.data().segundonome.charAt(0).toUpperCase() + "</span>");
+						}else{
+							$("#profileimg").html("<img src='" + user.photoURL + "' class='avatar-img rounded-circle border border-4 border-body'>");
+						}
+						// inserir dados nos val
+						$("#inputprimeironome").val(doc.data().primeironome);
+						$("#inputsegundonome").val(doc.data().segundonome);
+						$("#inputemail").val(user.email);
+						$("#inputnacionalidade").val(doc.data().nacionalidade);
+						$("#inputprofissao").val(doc.data().profissao);
+						$("#inputestadocivil").val(doc.data().estadocivil);
+						$("#inputcpf").val(doc.data().cpf);
+						$("#inputrg").val(doc.data().rg);
+						// inserir dados de contato
+						$("#inputcep").val(doc.data().cep);
+						$("#inputuf").val(doc.data().uf);
+						$("#inputbairro").val(doc.data().bairro);
+						$("#inputcidade").val(doc.data().cidade);
+						$("#inputendereco").val(doc.data().endereco);
+						$("#inputcomplemento").val(doc.data().complemento);
+						$("#inputtelefone").val(doc.data().telefone);
+						$("#inputcelular").val(doc.data().celular);
+						// carregar pagina
+						setTimeout(func, 100);
+						function func() {
+						    $("#loading").hide();
+							$("#headerprofile").show();
+							$("#pessoafisica").show();
+							$("#informationcontact").show();
+							if(user.emailVerified == false){
+								user.sendEmailVerification().then(function() {});
+								$("#alerts").html("<div class='alert alert-danger alert-dismissible fade show' role='alert'><strong>Atencão: </strong> Você ainda não fez a confirmação do seu email. <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>×</span></button></div>");
+							}
+						}
+					// fim da conta fisica
+					}
+			    } else {
+					// se nao tiver os dados do perfil
+			        $("#loading").hide();
+					$("#noprofile").show();
+			    }
+			}).catch(function(error) {
+			    console.log("Error getting document:", error);
+			});
+		  } else {
+		    window.location='/signin';
+		  }
+		});
+	</script>
+	<!-- MAIN CONTENT
+    ================================================== -->
+	<div class="main-content bg-fixed-bottom">
+	<div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-12 col-lg-10 col-xl-8">
+            
+            <!-- Header -->
+            <div class="header mt-md-5">
+              <div class="header-body">
+                
+                <!-- Pretitle -->
+                <h6 class="header-pretitle">
+                  Minha Conta
+                </h6>
+
+                <!-- Title -->
+                <h1 class="header-title">
+                  Meu Perfil
+                </h1>
+
+              </div>
+            </div>
+			<div id="alerts"></div>
+			<div class="card" id="loading">
+			  <div class="card-header">
+			    <h4 class="card-header-title">
+			      Carregando seu Perfil...
+			    </h4>
+			  </div>
+			  <div class="card-body is-loading is-loading-lg">
+			    Card content
+			  </div>
+			</div>
+			
+		  
+            <div class="card" id="headerprofile" style="display:none;">
+              <div class="card-body text-center" style="
+    background-image: url(/assets/img/covers/profile-cover-1.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+	">
+                <div class="row justify-content-center">
+                  <div class="col-12 col-md-10 col-xl-8">
+                
+                    <!-- Image -->
+                    <div class="avatar avatar-xxl header-avatar-top" style="margin-bottom: 1.125rem;" id="profileimg">
+					</div>
+
+                    <!-- Title -->
+                    <h2 style="color:white;" id="username">
+                    </h2>
+
+                    <!-- Content -->
+                    <p class="text-muted" id="meuid">
+                      
+                    </p>
+
+                    <!-- Button -->
+                    <a href="javascript:void(0)" class="btn btn-primary">
+                      Atualizar Foto de Perfil
+                    </a>
+                  
+                  </div>
+                </div> <!-- / .row -->
+              </div>
+            </div>
+			<!-- inicio da pessoa fisica -->
+            <div class="card" id="pessoafisica" style="display:none;">
+              <div class="card-header">
+                    
+                <!-- Title -->
+                <h4 class="card-header-title">
+                  Informações Pessoais
+                </h4>
+
+              </div>
+			  <div class="card-body text-center">
+	              <div class="mb-4">
+	
+	              <div class="row">
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- First name -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Nome
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputprimeironome" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Last name -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Sobrenome
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputsegundonome" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12">
+	                  
+	                  <!-- Email address -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label class="mb-1">
+	                      Endereço de Email
+					  	</label>
+	
+	                    <!-- Input -->
+	                    <input type="email" id="inputemail" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Phone -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Nacionalidade
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputnacionalidade" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Birthday -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Profissão
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputprofissao" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+					<div class="col-12">
+	                  
+	                  <!-- Email address -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label class="mb-1">
+	                      Estado Civil
+					  	</label>
+	
+	                    <!-- Input -->
+	                    <select class="form-control" id="inputestadocivil" disabled>
+							<option value="solteiro">Solteiro</option>
+							<option value="casado">Casado</option>
+							<option value="separado">Separado</option>
+							<option value="divorciado">Divorciado</option>
+							<option value="viuvo">Viúvo</option>
+						</select>
+	
+	                  </div>
+	
+				  </div>
+					<div class="col-12 col-md-6">
+	                  
+	                  <!-- Phone -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      CPF
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputcpf" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Birthday -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      RG
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputrg" class="form-control" disabled>
+	
+	                  </div>
+	
+				  </div>
+	              </div> <!-- / .row -->
+	
+	              
+	
+				  </div>
+				</div>
+				</div><!-- fim do pessoa fisica -->
+				
+				<!-- inicio da pessoa juridica -->
+            <div class="card" id="pessoajuridica" style="display:none;">
+              <div class="card-header">
+                    
+                <!-- Title -->
+                <h4 class="card-header-title">
+                  Informações Pessoais
+                </h4>
+
+              </div>
+			  <div class="card-body text-center">
+	              <div class="mb-4">
+	
+	              <div class="row">
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- First name -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Razão Social
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputrazaosocial" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Last name -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Nome do Contato
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputnomedocontato" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+					<div class="col-12">
+	                  
+	                  <!-- Email address -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label class="mb-1">
+	                      Endereço de Email
+					  	</label>
+	
+	                    <!-- Input -->
+	                    <input type="email" id="inputemailempresarial" class="form-control" disabled>
+	
+	                  </div>
+	
+				  </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Email address -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label class="mb-1">
+	                      CNPJ
+					  	</label>
+	
+	                    <!-- Input -->
+	                    <input type="email" id="inputcnpj" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Phone -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Inscrição Estadual
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputinscricaoestadual" class="form-control" disabled>
+	
+	                  </div>
+	
+	                </div>
+	              </div> <!-- / .row -->
+	
+	              
+	
+				  </div>
+				</div>
+			</div><!-- fim do pessoa juridica -->
+			
+			<!-- inicio do informacoes de contato -->
+			<div class="card" id="informationcontact" style="display:none;">
+              <div class="card-header">
+                    
+                <!-- Title -->
+                <h4 class="card-header-title">
+                  Informações de Contato
+                </h4>
+
+              </div>
+			  <div class="card-body text-center">
+	              <div class="mb-4">
+	
+	              <div class="row">
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- First name -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      CEP
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputcep" class="form-control" disabled="">
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Last name -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      UF
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputuf" class="form-control" disabled="">
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12">
+	                  
+	                  <!-- Email address -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label class="mb-1">
+	                      Bairro
+					  	</label>
+	
+	                    <!-- Input -->
+	                    <input type="email" id="inputbairro" class="form-control" disabled="">
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Phone -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Cidade
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputcidade" class="form-control" disabled="">
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Birthday -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Endereço
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputendereco" class="form-control" disabled="">
+	
+	                  </div>
+	
+	                </div>
+					<div class="col-12">
+	                  
+	                  <!-- Email address -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label class="mb-1">
+	                      Complemento
+					  	</label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputcomplemento" class="form-control" disabled="">
+	
+	                  </div>
+	
+				  </div>
+					<div class="col-12 col-md-6">
+	                  
+	                  <!-- Phone -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Telfone Fixo
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputtelefone" class="form-control" disabled="">
+	
+	                  </div>
+	
+	                </div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Birthday -->
+	                  <div class="form-group">
+	
+	                    <!-- Label -->
+	                    <label>
+	                      Celular
+	                    </label>
+	
+	                    <!-- Input -->
+	                    <input type="text" id="inputcelular" class="form-control" disabled="">
+	
+	                  </div>
+	
+				  </div>
+	              </div> <!-- / .row -->
+	
+	              <!-- Divider -->
+	              <hr class="mt-4 mb-5">
+	
+	              <div class="row">
+	                <div class="col-12 col-md-6" style="display:none;" id="vereficacao">
+	                  
+	                  <!-- Card -->
+	                  <div class="card bg-light border ml-md-4">
+	                    <div class="card-body">
+	                      
+	                      <p class="mb-2">
+	                        Requerimento de Vereficação de Conta
+	                      </p>
+	
+	                      <p class="small text-muted mb-2">
+	                        Para vereficação da conta, você precisa atender a todos os requisitos a seguir:
+	                      </p>
+	
+	                      <ul class="small text-muted pl-4 mb-0">
+	                        <li>
+	                          Estar com informações validas
+	                        </li>
+	                        <li>
+	                          Necessário carteira de identidade
+	                        </li>
+	                        <li>
+	                          Conter todos dados preenchidos
+	                        </li>
+	                        <li>
+	                          Não conter informações ilicitas
+	                        </li>
+	                      </ul>
+						  <div style="padding-top:20px;">
+
+		                    <a href="javascript:void(0)" class="btn btn-primary">
+			                    Solicitar Vereficação
+							</a>
+		
+							</div>
+	                    </div>
+	                  </div>
+	
+	                </div>
+					<div class="col-12 col-md-6" style="display:none;" id="newsenha">
+	                  
+	                  <!-- Card -->
+	                  <div class="card bg-light border ml-md-4">
+	                    <div class="card-body">
+	                      
+	                      <p class="mb-2">
+	                        Requerimento de Nova Senha
+	                      </p>
+	
+	                      <p class="small text-muted mb-2">
+	                        Para criar uma nova senha, você precisa atender a todos os requisitos a seguir:
+	                      </p>
+	
+	                      <ul class="small text-muted pl-4 mb-0">
+	                        <li>
+	                          Mínimo 8 caracteres
+	                        </li>
+	                        <li>
+	                          Pelo menos um caractere especial
+	                        </li>
+	                        <li>
+	                          Pelo menos um numero
+	                        </li>
+	                        <li>
+	                        Não pode ser o mesmo que uma senha anterior
+	                        </li>
+	                      </ul>
+						  <div style="padding-top:20px;">
+
+		                    <a href="javascript:void(0)" class="btn btn-primary">
+			                    Solicitar Senha
+							</a>
+		
+							</div>
+	                    </div>
+	                  </div>
+	
+				  	</div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Card -->
+	                  <div class="card bg-light border ml-md-4">
+	                    <div class="card-body">
+	                      
+	                      <p class="mb-2">
+	                        Requerimento de Exclusão de Conta
+	                      </p>
+	
+	                      <p class="small text-muted mb-2">
+	                        Para exclusão da conta, você precisa atender a todos os requisitos a seguir:
+	                      </p>
+	
+	                      <ul class="small text-muted pl-4 mb-0 form-group">
+	                        <li>
+	                          Nenhuma atividades em 7 dias
+	                        </li>
+	                        <li>
+	                          Não ter débitos pendentes
+	                        </li>
+	                        <li>
+	                          Estar sem problemas de denúncias
+	                        </li>
+	                        <li>
+	                          Você concorda em apagar tudo
+	                        </li>
+	                      </ul>
+						  <div style="padding-top:20px;">
+
+		                    <a href="javascript:void(0)" class="btn btn-danger">
+			                    Solicitar Exclusão
+							</a>
+		
+						</div>
+	                    </div>
+	                  </div>
+	
+				  </div>
+				  <div class="col-12">
+	                  
+	                  <button type="button" class="btn btn-outline-danger mb-2" onclick="firebase.auth().signOut().then(function() {});">Sair da Conta</button>
+	
+				  </div>
+	              </div> <!-- / .row -->
+	
+				  </div>
+				</div>
+				</div>
+			<!-- fim das infromacoes de contato-->
+			<!-- inicio de conta sem perfil -->
+			<div class="card" style="display:none;" id="noprofile">
+			  	<div class="card-body text-center">
+			    	<div class="row">
+						<div class="col-12">
+							<h2>
+						    	Você ainda não criou um perfil para usar nossos serviços.
+							</h2>
+  						</div>
+					<div class="col-12 col-md-6">
+	                  
+	                  <!-- Card -->
+	                  <div class="card bg-light border ml-md-4">
+	                    <div class="card-body">
+	                      
+	                      <p class="mb-2">
+	                        Criar um Perfil Fisico
+	                      </p>
+	
+	                      <p class="small text-muted mb-2">
+	                        Para criar um perfil, você precisa atender a todos os requisitos a seguir:
+	                      </p>
+	
+	                      <ul class="small text-muted pl-4 mb-0">
+	                        <li>
+	                          Inserir Informações Validas
+	                        </li>
+	                        <li>
+	                          Necessário CPF e RG
+	                        </li>
+	                        <li>
+	                          Informar Dados de Contato
+						  	</li>
+	                      </ul>
+						  <div style="padding-top:20px;">
+
+		                    <a href="/createprofile?type=fisico" class="btn btn-primary">
+			                    Criar Perfil
+							</a>
+		
+							</div>
+	                    </div>
+	                  </div>
+	
+				  	</div>
+	                <div class="col-12 col-md-6">
+	                  
+	                  <!-- Card -->
+	                  <div class="card bg-light border ml-md-4">
+	                    <div class="card-body">
+	                      
+	                      <p class="mb-2">
+	                        Criar um Perfil Juridico
+	                      </p>
+	
+	                      <p class="small text-muted mb-2">
+	                        Para criar um perfil, você precisa atender a todos os requisitos a seguir:
+	                      </p>
+	
+	                      <ul class="small text-muted pl-4 mb-0 form-group">
+	                        <li>
+	                          Inserir Informações Validas
+	                        </li>
+	                        <li>
+	                          Necessário CNPJ
+	                        </li>
+	                        <li>
+	                          Informar Dados de Contato
+						  </li>
+	                      </ul>
+						  <div style="padding-top:20px;">
+
+		                    <a href="/createprofile?type=juridico" class="btn btn-danger">
+			                    Criar Perfil
+							</a>
+		
+						</div>
+	                    </div>
+	                  </div>
+	
+					  </div>
+			  	</div>
+			</div>
+			<!-- fim de conta sem perfil -->
+
+          </div>
+        </div> <!-- / .row -->
+      </div>
+      
+	  </div>
+	
+  <script type='text/javascript'>
+(function(){ var widget_id = 'zIjAeOwBDK';var d=document;var w=window;function l(){var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;s.src = '//code.jivosite.com/script/widget/'+widget_id; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);}if(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+</script>
+  <script src="/assets/libs/chart.js/dist/Chart.min.js"></script>
+  <script src="/assets/libs/chart.js/Chart.extension.min.js"></script>
+    <script src="/assets/libs/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="/assets/libs/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+    <script src="/assets/libs/list.js/dist/list.min.js"></script>
+    <script src="/assets/libs/quill/dist/quill.min.js"></script>
+    <script src="/assets/libs/dropzone/dist/min/dropzone.min.js"></script>
+    <script src="/assets/libs/select2/dist/js/select2.min.js"></script>
+    <script src="/assets/js/theme.min.js"></script></body></html>
